@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:core';
 
 /// api_key
-const apiKey = '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';
+const apiKey = 'your Api-key here!!';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
