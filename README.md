@@ -1,15 +1,31 @@
-# chat_gpt
+# Chat Bot using openAI (with Flutter)
 
-A new Flutter project.
+A new Flutter project that utilizes [OpenAI API](https://platform.openai.com/). 
+
+## Install "http" Package
+
+You may run this command:
+
+With Dart:
+        $ dart pub add http
+
+With Flutter:
+        $ flutter pub add http 
+
+OR
+
+You may manually add a line to your package's pubspec.yaml :
+
+    dependencies:
+        http: ^0.13.5
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+You will need to sign up for an account to get an API key to use openAI API. 
 
-A few resources to get you started if this is your first Flutter project:
+Go to the chat_bot_screen to add the API. 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+You may change the prompt through changing the variable "megaPrompt".
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
