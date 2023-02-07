@@ -2,6 +2,8 @@
 
 A new Flutter project that utilizes [OpenAI API](https://platform.openai.com/). 
 
+Credit to [ngjunya](https://github.com/ngjunya/flutter_chatgpt_example?ref=morioh.com&utm_source=morioh.com) for tutorial.
+
 ## Install "http" Package
 
 You may run this command:
