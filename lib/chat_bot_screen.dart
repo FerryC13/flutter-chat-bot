@@ -4,12 +4,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:chat_gpt/model/message_model.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:core';
 
 /// api_key
-const apiKey = 'your Api-key here!!';
+// const apiKey = 'your Api-key here!!';
+final apiKey = dotenv.env['apiKey'];
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -145,16 +147,14 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   Expanded _messageList() {
     return Expanded(
       flex: 7,
-      child: Scrollbar(
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: messages.length,
-          itemBuilder: (context, ind) {
-            return messages[ind].isBot
-                ? _botCard(index: ind)
-                : _userCard(index: ind);
-          },
-        ),
+      child: ListView.builder(
+        controller: _scrollController,
+        itemCount: messages.length,
+        itemBuilder: (context, ind) {
+          return messages[ind].isBot
+              ? _botCard(index: ind)
+              : _userCard(index: ind);
+        },
       ),
     );
   }
@@ -257,85 +257,90 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   Container _bottomNavigation(BuildContext context) {
     return Container(
+      height: 80,
       color: Theme.of(context).colorScheme.background,
-      child: Expanded(
-        flex: 1,
-        child: Container(
-          alignment: Alignment.bottomCenter,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Visibility(
-                visible: isLoading,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: kDefault,
-                  ),
-                  width: double.maxFinite,
-                  child: Text(
-                    "ChatGPT is typing...",
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 11,
-                        color: Theme.of(context).colorScheme.secondary),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height *
-                    (isLoading ? 0.06 : 0.07),
-                width: double.maxFinite,
-                padding: EdgeInsets.symmetric(horizontal: kDefault),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(kDefault),
-                    topLeft: Radius.circular(kDefault),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.23),
-                      offset: Offset(.5, kDefault / 1.2),
-                      blurRadius: kDefault,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Visibility(
+                    visible: isLoading,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kDefault,
+                      ),
+                      width: double.maxFinite,
+                      child: Text(
+                        "ChatGPT is typing...",
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 11,
+                            color: Theme.of(context).colorScheme.secondary),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                  ],
-                ),
-                child: Container(
-                  margin: EdgeInsets.only(bottom: kDefault * 0.5),
-                  padding: EdgeInsets.only(
-                      left: kDefault * 0.5, right: kDefault * 0.5),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      borderRadius: BorderRadius.circular(kDefault)),
-                  child: TextField(
-                    textInputAction: TextInputAction.newline,
-                    onSubmitted: (value) {
-                      _sendMessage();
-                    },
-                    controller: _txtMessage,
-                    decoration: InputDecoration(
-                      suffixIcon: GestureDetector(
-                        onTap: () {
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height *
+                        (isLoading ? 0.06 : 0.07),
+                    width: double.maxFinite,
+                    padding: EdgeInsets.symmetric(horizontal: kDefault),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.background,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(kDefault),
+                        topLeft: Radius.circular(kDefault),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.23),
+                          offset: Offset(.5, kDefault / 1.2),
+                          blurRadius: kDefault,
+                        ),
+                      ],
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: kDefault * 0.5),
+                      padding: EdgeInsets.only(
+                          left: kDefault * 0.5, right: kDefault * 0.5),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                          borderRadius: BorderRadius.circular(kDefault)),
+                      child: TextField(
+                        textInputAction: TextInputAction.newline,
+                        onSubmitted: (value) {
                           _sendMessage();
-                          // sendMessage(_txtMessage.text.toString());
                         },
-                        child: Icon(
-                          Icons.send,
-                          size: kDefault * 1.4,
-                          color: Theme.of(context).colorScheme.primary,
+                        controller: _txtMessage,
+                        decoration: InputDecoration(
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              _sendMessage();
+                              // sendMessage(_txtMessage.text.toString());
+                            },
+                            child: Icon(
+                              Icons.send,
+                              size: kDefault * 1.4,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          hintText: "Message",
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
                         ),
                       ),
-                      hintText: "Message",
-                      disabledBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -343,61 +348,74 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   AppBar _appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.onSecondary,
-      title: Expanded(
-        flex: 1,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: kDefault,
-            vertical: kDefault / 3,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onSecondary,
-            // borderRadius: BorderRadius.only(
-            //   bottomRight: Radius.circular(kDefault),
-            //   bottomLeft: Radius.circular(kDefault),
-            // ),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: Colors.grey.withOpacity(0.23),
-            //     offset: Offset(kDefault / 1.2, 0.5),
-            //     blurRadius: kDefault,
-            //   ),
-            // ],
-          ),
-          child: Row(
+      title: SizedBox(
+        height: 80,
+        child: Flex(
+            mainAxisSize: MainAxisSize.max,
+            direction: Axis.vertical,
             children: [
-              // Icon(
-              //   Icons.arrow_back_rounded,
-              //   color: Colors.black,
-              //   size: kDefault * 1.6,
-              // ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: kDefault),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(kUrlProfile),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: kDefault,
+                    vertical: kDefault / 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                    // borderRadius: BorderRadius.only(
+                    //   bottomRight: Radius.circular(kDefault),
+                    //   bottomLeft: Radius.circular(kDefault),
+                    // ),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.grey.withOpacity(0.23),
+                    //     offset: Offset(kDefault / 1.2, 0.5),
+                    //     blurRadius: kDefault,
+                    //   ),
+                    // ],
+                  ),
+                  child: Row(
+                    children: [
+                      // Icon(
+                      //   Icons.arrow_back_rounded,
+                      //   color: Colors.black,
+                      //   size: kDefault * 1.6,
+                      // ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: kDefault),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(kUrlProfile),
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Chat GPT",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                          ),
+                          Text(
+                            "Online",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.green),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Chat GPT",
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
-                  Text(
-                    "Online",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.green),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
+            ]),
       ),
     );
   }
